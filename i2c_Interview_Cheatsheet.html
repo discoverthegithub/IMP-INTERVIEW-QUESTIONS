@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>i2c Associate SE — Performance Testing Cheat Sheet</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; max-width: 850px; margin: 40px auto; padding: 0 20px; line-height: 1.55; color: #1a1a1a; background: #fdfdfb; }
+  h1 { font-size: 26px; border-bottom: 3px solid #2c3e50; padding-bottom: 10px; }
+  h2 { font-size: 20px; color: #2c3e50; margin-top: 40px; border-left: 5px solid #2c3e50; padding-left: 10px; }
+  h3 { font-size: 16px; color: #444; margin-top: 20px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+  th { background: #2c3e50; color: white; }
+  code, pre { font-family: 'Consolas', monospace; background: #f0f0ec; padding: 2px 5px; border-radius: 3px; font-size: 13.5px; }
+  pre { padding: 10px; overflow-x: auto; }
+  .box { background: #fff8e6; border: 1px solid #e0c66b; padding: 12px 16px; border-radius: 6px; margin: 15px 0; }
+  .warn { background: #fdeaea; border: 1px solid #e0a0a0; padding: 12px 16px; border-radius: 6px; margin: 15px 0; }
+  ul { margin-top: 5px; }
+  .tag { display:inline-block; background:#2c3e50; color:white; font-size:11px; padding:2px 8px; border-radius:10px; margin-left:8px; }
+</style>
+</head>
+<body>
+
+<h1>i2c — Associate Software Engineer (Performance Testing)<br><span style="font-size:16px; color:#666;">MCQ + Essay Cheat Sheet — night-before cram version</span></h1>
+
+<div class="warn">
+<b>Reminder:</b> No AI, no phone, no calculator during the actual test — pen and paper only, 2 hours, 50 MCQs (need 34+ to pass) + 1 essay. This sheet is for tonight's prep only.
+</div>
+
+<h2>1. Test Format Strategy</h2>
+<ul>
+  <li><b>50 MCQs, need 34+ (68%).</b> Don't aim for perfection — aim to not get stuck. Skip and return if unsure, don't burn time on one question.</li>
+  <li><b>Essay is handwritten and graded on:</b> ideas/analysis, development/support, organization, language, conventions (grammar/spelling). See essay section below.</li>
+  <li>Time budget: roughly 60-70 minutes for MCQs, 40-50 minutes for essay, leave a buffer to review.</li>
+</ul>
+
+<h2>2. OOP Concepts (high-probability MCQs)</h2>
+<table>
+<tr><th>Concept</th><th>Definition</th></tr>
+<tr><td>Encapsulation</td><td>Bundling data + methods together, restricting direct access to internal state (private/protected).</td></tr>
+<tr><td>Abstraction</td><td>Hiding implementation details, exposing only what's necessary (interfaces, abstract classes).</td></tr>
+<tr><td>Inheritance</td><td>A class derives properties/behavior from a parent class.</td></tr>
+<tr><td>Polymorphism</td><td>Same method name behaves differently depending on the object (method overriding) or same name, different parameters (overloading).</td></tr>
+</table>
+<h3>Commonly confused pairs</h3>
+<ul>
+  <li><b>Overloading vs Overriding:</b> Overloading = same method name, different parameters, same class (compile-time). Overriding = subclass redefines parent method, same signature (runtime).</li>
+  <li><b>Abstract class vs Interface:</b> Abstract class can have some implemented methods + state. Interface (traditionally) only declares methods, no state.</li>
+  <li><b>Composition vs Inheritance:</b> Composition = "has-a" relationship (object contains another object). Inheritance = "is-a" relationship.</li>
+</ul>
+
+<h2>3. Database Concepts</h2>
+<h3>Normalization</h3>
+<table>
+<tr><th>Form</th><th>Rule</th></tr>
+<tr><td>1NF</td><td>Atomic values only, no repeating groups/columns.</td></tr>
+<tr><td>2NF</td><td>1NF + no partial dependency (non-key column depends on entire composite key, not just part of it).</td></tr>
+<tr><td>3NF</td><td>2NF + no transitive dependency (non-key column doesn't depend on another non-key column).</td></tr>
+</table>
+
+<h3>Keys</h3>
+<ul>
+  <li><b>Primary Key:</b> Uniquely identifies a row, cannot be null.</li>
+  <li><b>Foreign Key:</b> References a primary key in another table, enforces referential integrity.</li>
+  <li><b>Composite Key:</b> Two or more columns together form a unique identifier.</li>
+</ul>
+
+<h3>Joins</h3>
+<table>
+<tr><th>Join</th><th>Returns</th></tr>
+<tr><td>INNER JOIN</td><td>Only matching rows in both tables.</td></tr>
+<tr><td>LEFT JOIN</td><td>All rows from left table + matches from right (NULL if no match).</td></tr>
+<tr><td>RIGHT JOIN</td><td>All rows from right table + matches from left.</td></tr>
+<tr><td>FULL OUTER JOIN</td><td>All rows from both, matched where possible.</td></tr>
+</table>
+
+<h3>ACID Properties (likely to be asked directly)</h3>
+<ul>
+  <li><b>Atomicity</b> — transaction is all-or-nothing.</li>
+  <li><b>Consistency</b> — database moves from one valid state to another.</li>
+  <li><b>Isolation</b> — concurrent transactions don't interfere with each other.</li>
+  <li><b>Durability</b> — once committed, changes survive even a crash.</li>
+</ul>
+
+<h3>Indexing</h3>
+<p>Speeds up read queries (SELECT) by avoiding full table scans, but slows down writes (INSERT/UPDATE/DELETE) since the index also needs updating. Trade-off: read speed vs write speed + storage.</p>
+
+<h2>4. Data Structures (fundamentals)</h2>
+<table>
+<tr><th>Structure</th><th>Access</th><th>Insert/Delete</th><th>Notes</th></tr>
+<tr><td>Array</td><td>O(1)</td><td>O(n)</td><td>Fixed size (in most languages), contiguous memory.</td></tr>
+<tr><td>Linked List</td><td>O(n)</td><td>O(1) at known position</td><td>No contiguous memory, extra pointer overhead.</td></tr>
+<tr><td>Stack</td><td>—</td><td>O(1) push/pop</td><td>LIFO — Last In First Out.</td></tr>
+<tr><td>Queue</td><td>—</td><td>O(1) enqueue/dequeue</td><td>FIFO — First In First Out.</td></tr>
+<tr><td>Hash Table</td><td>O(1) avg</td><td>O(1) avg</td><td>Key-value, collisions handled via chaining/open addressing.</td></tr>
+<tr><td>Binary Search Tree</td><td>O(log n) avg</td><td>O(log n) avg</td><td>Degrades to O(n) if unbalanced.</td></tr>
+</table>
+<p><b>Big-O quick reference:</b> O(1) constant &lt; O(log n) logarithmic &lt; O(n) linear &lt; O(n log n) &lt; O(n²) quadratic.</p>
+
+<h2>5. Performance Testing — Core Domain Knowledge</h2>
+<div class="box">This role is specifically Performance Testing, not general dev. Expect MCQs to lean into this domain more than a typical fresh-grad test.</div>
+
+<h3>Key Concepts</h3>
+<ul>
+  <li><b>Load Testing:</b> system behavior under expected user load.</li>
+  <li><b>Stress Testing:</b> pushing beyond normal capacity to find the breaking point.</li>
+  <li><b>Spike Testing:</b> sudden, sharp increase in load.</li>
+  <li><b>Soak/Endurance Testing:</b> system under sustained load over a long period — checks for memory leaks, degradation.</li>
+  <li><b>Capacity Testing:</b> maximum load a system can handle before performance degrades unacceptably.</li>
+  <li><b>Bottleneck:</b> the component (CPU, memory, disk I/O, network, DB) limiting overall system performance.</li>
+</ul>
+
+<h3>JMeter Basics</h3>
+<ul>
+  <li>Open-source load testing tool (Apache JMeter), primarily for web apps / APIs.</li>
+  <li>Core elements: <b>Thread Group</b> (simulates users), <b>Sampler</b> (the actual request, e.g. HTTP Request), <b>Listener</b> (view results — graphs, tables), <b>Assertion</b> (validate response correctness).</li>
+  <li>Common metrics reported: response time, throughput, error rate, latency.</li>
+</ul>
+
+<h3>Shell Scripting Basics (likely to have direct MCQs)</h3>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>top</code> / <code>htop</code></td><td>Live CPU/memory usage per process.</td></tr>
+<tr><td><code>ps aux</code></td><td>List running processes.</td></tr>
+<tr><td><code>df -h</code></td><td>Disk space usage, human-readable.</td></tr>
+<tr><td><code>free -h</code></td><td>Memory usage.</td></tr>
+<tr><td><code>grep</code></td><td>Search text patterns in files.</td></tr>
+<tr><td><code>awk</code> / <code>sed</code></td><td>Text processing / stream editing.</td></tr>
+<tr><td><code>chmod</code></td><td>Change file permissions.</td></tr>
+<tr><td><code>kill -9 &lt;pid&gt;</code></td><td>Force-terminate a process.</td></tr>
+<tr><td><code>netstat</code> / <code>ss</code></td><td>Network connections, listening ports.</td></tr>
+</table>
+
+<h3>OS Basics</h3>
+<ul>
+  <li><b>Process vs Thread:</b> Process = independent program with own memory space. Thread = lightweight unit within a process, shares memory with other threads in that process.</li>
+  <li><b>Deadlock:</b> two or more processes waiting on each other's resources indefinitely. Four conditions: mutual exclusion, hold and wait, no preemption, circular wait.</li>
+  <li><b>Virtual Memory:</b> lets a process use more memory than physically available, via paging/swapping to disk.</li>
+  <li><b>Paging:</b> dividing memory into fixed-size blocks to avoid fragmentation.</li>
+</ul>
+
+<h3>Network Basics</h3>
+<ul>
+  <li><b>TCP vs UDP:</b> TCP = connection-oriented, reliable, ordered (used for HTTP, file transfer). UDP = connectionless, faster, no delivery guarantee (used for streaming, gaming).</li>
+  <li><b>HTTP status codes:</b> 2xx success, 3xx redirect, 4xx client error, 5xx server error. Know 200, 301, 404, 500 at minimum.</li>
+  <li><b>DNS:</b> translates domain names to IP addresses.</li>
+  <li><b>Latency vs Throughput:</b> Latency = time for one request to complete. Throughput = number of requests handled per unit time. A system can have low latency but low throughput, or vice versa — don't confuse the two.</li>
+</ul>
+
+<h3>SDLC & QA Methodologies</h3>
+<ul>
+  <li><b>SDLC phases:</b> Requirements → Design → Implementation → Testing → Deployment → Maintenance.</li>
+  <li><b>Waterfall vs Agile:</b> Waterfall = sequential, rigid phases. Agile = iterative sprints, adapts to change.</li>
+  <li><b>Types of testing:</b> Unit (individual component), Integration (components together), System (whole application), UAT (user acceptance, real-world validation), Regression (re-test after changes to confirm nothing broke).</li>
+  <li><b>Black-box vs White-box testing:</b> Black-box = tester doesn't see internal code, tests input/output. White-box = tester sees and tests internal logic/code paths.</li>
+</ul>
+
+<h2>6. Essay Writing — Practice Plan for Tonight</h2>
+<div class="box">
+<b>You flagged this yourself:</b> mind thinks in Urdu/mixed language, writing in English slows you down, and this is a graded communication check with no AI allowed. This needs deliberate practice tonight, not just reading tips.
+</div>
+
+<h3>Structure to memorize (use for ANY topic they give you)</h3>
+<ol>
+  <li><b>Intro (3-4 sentences):</b> State the topic, your position/stance clearly, and briefly preview your 2-3 supporting points.</li>
+  <li><b>Body Paragraph 1:</b> One clear point + one concrete example or reason supporting it.</li>
+  <li><b>Body Paragraph 2:</b> Second point, ideally a different angle (not repeating point 1 in different words).</li>
+  <li><b>Body Paragraph 3 (optional, if time allows):</b> Counter-argument + why your position still holds — this shows analytical depth, which is explicitly graded.</li>
+  <li><b>Conclusion (2-3 sentences):</b> Restate your position, summarize briefly, end with a forward-looking or broader statement.</li>
+</ol>
+
+<h3>What graders are actually scoring — map your effort here</h3>
+<ul>
+  <li><b>Ideas & analysis:</b> Don't just describe the topic — take a clear stance and analyze <i>why</i>, not just <i>what</i>.</li>
+  <li><b>Development & support:</b> Every claim needs a reason or example. Don't leave a statement floating unsupported.</li>
+  <li><b>Organization:</b> Stick to the paragraph structure above. A grader should be able to tell where your intro ends and each point begins.</li>
+  <li><b>Language & conventions:</b> Simple, correct sentences beat complex, error-filled ones. Don't reach for big words you're unsure of — clarity scores higher than vocabulary.</li>
+</ul>
+
+<h3>Tonight's practice drill (do this, don't just read it)</h3>
+<ol>
+  <li>Pick any general topic (e.g. "Is remote work better than office work?", "Should social media be regulated?").</li>
+  <li>Set a 25-minute timer. Handwrite a full essay using the structure above — no typing, no AI, exactly like the real test.</li>
+  <li>Read it back once. Check: did you take a clear stance? Does each paragraph have one point + one support? Any repeated ideas?</li>
+  <li>Do this ONE more time with a different topic if time allows. One full practice round under real time pressure is worth more than reading ten example essays.</li>
+</ol>
+
+<h3>Sample general topics to expect</h3>
+<ul>
+  <li>Technology's impact on daily life / jobs</li>
+  <li>Remote work vs office work</li>
+  <li>Social media — benefit or harm</li>
+  <li>Importance of time management / discipline</li>
+  <li>AI's role in the future of work (relevant to you personally — could actually help you write faster if this comes up)</li>
+</ul>
+
+<h2>7. Final Notes</h2>
+<ul>
+  <li>MCQs: don't overthink — most are definition/recall level based on this list. Trust your first instinct if you genuinely studied the term before.</li>
+  <li>Essay: structure beats eloquence. A clearly organized, simply written essay scores higher than an ambitious one with grammar mistakes and no clear stance.</li>
+  <li>You get pen and paper for rough work — use it to outline your essay (3-4 bullet points) before writing, even under time pressure. Two minutes of planning saves you from a disorganized essay.</li>
+</ul>
+
+</body>
+</html>

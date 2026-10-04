@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>i2c Associate SE — Performance Testing Cheat Sheet</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; max-width: 850px; margin: 40px auto; padding: 0 20px; line-height: 1.55; color: #1a1a1a; background: #fdfdfb; }
+  h1 { font-size: 26px; border-bottom: 3px solid #2c3e50; padding-bottom: 10px; }
+  h2 { font-size: 20px; color: #2c3e50; margin-top: 40px; border-left: 5px solid #2c3e50; padding-left: 10px; }
+  h3 { font-size: 16px; color: #444; margin-top: 20px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+  th { background: #2c3e50; color: white; }
+  code, pre { font-family: 'Consolas', monospace; background: #f0f0ec; padding: 2px 5px; border-radius: 3px; font-size: 13.5px; }
+  pre { padding: 10px; overflow-x: auto; }
+  .box { background: #fff8e6; border: 1px solid #e0c66b; padding: 12px 16px; border-radius: 6px; margin: 15px 0; }
+  .warn { background: #fdeaea; border: 1px solid #e0a0a0; padding: 12px 16px; border-radius: 6px; margin: 15px 0; }
+  ul { margin-top: 5px; }
+  .tag { display:inline-block; background:#2c3e50; color:white; font-size:11px; padding:2px 8px; border-radius:10px; margin-left:8px; }
+</style>
+</head>
+<body>
+
+<h1>i2c — Associate Software Engineer (Performance Testing)<br><span style="font-size:16px; color:#666;">MCQ + Essay Cheat Sheet — night-before cram version</span></h1>
+
+<div class="warn">
+<b>Reminder:</b> No AI, no phone, no calculator during the actual test — pen and paper only, 2 hours, 50 MCQs (need 34+ to pass) + 1 essay. This sheet is for tonight's prep only.
+</div>
+
+<h2>1. Test Format Strategy</h2>
+<ul>
+  <li><b>50 MCQs, need 34+ (68%).</b> Don't aim for perfection — aim to not get stuck. Skip and return if unsure, don't burn time on one question.</li>
+  <li><b>Essay is handwritten and graded on:</b> ideas/analysis, development/support, organization, language, conventions (grammar/spelling). See essay section below.</li>
+  <li>Time budget: roughly 60-70 minutes for MCQs, 40-50 minutes for essay, leave a buffer to review.</li>
+</ul>
+
+<h2>2. OOP Concepts (high-probability MCQs)</h2>
+<table>
+<tr><th>Concept</th><th>Definition</th></tr>
+<tr><td>Encapsulation</td><td>Bundling data + methods together, restricting direct access to internal state (private/protected).</td></tr>
+<tr><td>Abstraction</td><td>Hiding implementation details, exposing only what's necessary (interfaces, abstract classes).</td></tr>
+<tr><td>Inheritance</td><td>A class derives properties/behavior from a parent class.</td></tr>
+<tr><td>Polymorphism</td><td>Same method name behaves differently depending on the object (method overriding) or same name, different parameters (overloading).</td></tr>
+</table>
+<h3>Commonly confused pairs</h3>
+<ul>
+  <li><b>Overloading vs Overriding:</b> Overloading = same method name, different parameters, same class (compile-time). Overriding = subclass redefines parent method, same signature (runtime).</li>
+  <li><b>Abstract class vs Interface:</b> Abstract class can have some implemented methods + state. Interface (traditionally) only declares methods, no state.</li>
+  <li><b>Composition vs Inheritance:</b> Composition = "has-a" relationship (object contains another object). Inheritance = "is-a" relationship.</li>
+</ul>
+
+<h2>3. Database Concepts</h2>
+<h3>Normalization</h3>
+<table>
+<tr><th>Form</th><th>Rule</th></tr>
+<tr><td>1NF</td><td>Atomic values only, no repeating groups/columns.</td></tr>
+<tr><td>2NF</td><td>1NF + no partial dependency (non-key column depends on entire composite key, not just part of it).</td></tr>
+<tr><td>3NF</td><td>2NF + no transitive dependency (non-key column doesn't depend on another non-key column).</td></tr>
+</table>
+
+<h3>Keys</h3>
+<ul>
+  <li><b>Primary Key:</b> Uniquely identifies a row, cannot be null.</li>
+  <li><b>Foreign Key:</b> References a primary key in another table, enforces referential integrity.</li>
+  <li><b>Composite Key:</b> Two or more columns together form a unique identifier.</li>
+</ul>
+
+<h3>Joins</h3>
+<table>
+<tr><th>Join</th><th>Returns</th></tr>
+<tr><td>INNER JOIN</td><td>Only matching rows in both tables.</td></tr>
+<tr><td>LEFT JOIN</td><td>All rows from left table + matches from right (NULL if no match).</td></tr>
+<tr><td>RIGHT JOIN</td><td>All rows from right table + matches from left.</td></tr>
+<tr><td>FULL OUTER JOIN</td><td>All rows from both, matched where possible.</td></tr>
+</table>
+
+<h3>ACID Properties (likely to be asked directly)</h3>
+<ul>
+  <li><b>Atomicity</b> — transaction is all-or-nothing.</li>
+  <li><b>Consistency</b> — database moves from one valid state to another.</li>
+  <li><b>Isolation</b> — concurrent transactions don't interfere with each other.</li>
+  <li><b>Durability</b> — once committed, changes survive even a crash.</li>
+</ul>
+
+<h3>Indexing</h3>
+<p>Speeds up read queries (SELECT) by avoiding full table scans, but slows down writes (INSERT/UPDATE/DELETE) since the index also needs updating. Trade-off: read speed vs write speed + storage.</p>
+
+<h2>4. Data Structures (fundamentals)</h2>
+<table>
+<tr><th>Structure</th><th>Access</th><th>Insert/Delete</th><th>Notes</th></tr>
+<tr><td>Array</td><td>O(1)</td><td>O(n)</td><td>Fixed size (in most languages), contiguous memory.</td></tr>
+<tr><td>Linked List</td><td>O(n)</td><td>O(1) at known position</td><td>No contiguous memory, extra pointer overhead.</td></tr>
+<tr><td>Stack</td><td>—</td><td>O(1) push/pop</td><td>LIFO — Last In First Out.</td></tr>
+<tr><td>Queue</td><td>—</td><td>O(1) enqueue/dequeue</td><td>FIFO — First In First Out.</td></tr>
+<tr><td>Hash Table</td><td>O(1) avg</td><td>O(1) avg</td><td>Key-value, collisions handled via chaining/open addressing.</td></tr>
+<tr><td>Binary Search Tree</td><td>O(log n) avg</td><td>O(log n) avg</td><td>Degrades to O(n) if unbalanced.</td></tr>
+</table>
+<p><b>Big-O quick reference:</b> O(1) constant &lt; O(log n) logarithmic &lt; O(n) linear &lt; O(n log n) &lt; O(n²) quadratic.</p>
+
+<h2>5. Performance Testing — Core Domain Knowledge</h2>
+<div class="box">This role is specifically Performance Testing, not general dev. Expect MCQs to lean into this domain more than a typical fresh-grad test.</div>
+
+<h3>Key Concepts</h3>
+<ul>
+  <li><b>Load Testing:</b> system behavior under expected user load.</li>
+  <li><b>Stress Testing:</b> pushing beyond normal capacity to find the breaking point.</li>
+  <li><b>Spike Testing:</b> sudden, sharp increase in load.</li>
+  <li><b>Soak/Endurance Testing:</b> system under sustained load over a long period — checks for memory leaks, degradation.</li>
+  <li><b>Capacity Testing:</b> maximum load a system can handle before performance degrades unacceptably.</li>
+  <li><b>Bottleneck:</b> the component (CPU, memory, disk I/O, network, DB) limiting overall system performance.</li>
+</ul>
+
+<h3>JMeter Basics</h3>
+<ul>
+  <li>Open-source load testing tool (Apache JMeter), primarily for web apps / APIs.</li>
+  <li>Core elements: <b>Thread Group</b> (simulates users), <b>Sampler</b> (the actual request, e.g. HTTP Request), <b>Listener</b> (view results — graphs, tables), <b>Assertion</b> (validate response correctness).</li>
+  <li>Common metrics reported: response time, throughput, error rate, latency.</li>
+</ul>
+
+<h3>Shell Scripting Basics (likely to have direct MCQs)</h3>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>top</code> / <code>htop</code></td><td>Live CPU/memory usage per process.</td></tr>
+<tr><td><code>ps aux</code></td><td>List running processes.</td></tr>
+<tr><td><code>df -h</code></td><td>Disk space usage, human-readable.</td></tr>
+<tr><td><code>free -h</code></td><td>Memory usage.</td></tr>
+<tr><td><code>grep</code></td><td>Search text patterns in files.</td></tr>
+<tr><td><code>awk</code> / <code>sed</code></td><td>Text processing / stream editing.</td></tr>
+<tr><td><code>chmod</code></td><td>Change file permissions.</td></tr>
+<tr><td><code>kill -9 &lt;pid&gt;</code></td><td>Force-terminate a process.</td></tr>
+<tr><td><code>netstat</code> / <code>ss</code></td><td>Network connections, listening ports.</td></tr>
+</table>
+
+<h3>OS Basics</h3>
+<ul>
+  <li><b>Process vs Thread:</b> Process = independent program with own memory space. Thread = lightweight unit within a process, shares memory with other threads in that process.</li>
+  <li><b>Deadlock:</b> two or more processes waiting on each other's resources indefinitely. Four conditions: mutual exclusion, hold and wait, no preemption, circular wait.</li>
+  <li><b>Virtual Memory:</b> lets a process use more memory than physically available, via paging/swapping to disk.</li>
+  <li><b>Paging:</b> dividing memory into fixed-size blocks to avoid fragmentation.</li>
+</ul>
+
+<h3>Network Basics</h3>
+<ul>
+  <li><b>TCP vs UDP:</b> TCP = connection-oriented, reliable, ordered (used for HTTP, file transfer). UDP = connectionless, faster, no delivery guarantee (used for streaming, gaming).</li>
+  <li><b>HTTP status codes:</b> 2xx success, 3xx redirect, 4xx client error, 5xx server error. Know 200, 301, 404, 500 at minimum.</li>
+  <li><b>DNS:</b> translates domain names to IP addresses.</li>
+  <li><b>Latency vs Throughput:</b> Latency = time for one request to complete. Throughput = number of requests handled per unit time. A system can have low latency but low throughput, or vice versa — don't confuse the two.</li>
+</ul>
+
+<h3>SDLC & QA Methodologies</h3>
+<ul>
+  <li><b>SDLC phases:</b> Requirements → Design → Implementation → Testing → Deployment → Maintenance.</li>
+  <li><b>Waterfall vs Agile:</b> Waterfall = sequential, rigid phases. Agile = iterative sprints, adapts to change.</li>
+  <li><b>Types of testing:</b> Unit (individual component), Integration (components together), System (whole application), UAT (user acceptance, real-world validation), Regression (re-test after changes to confirm nothing broke).</li>
+  <li><b>Black-box vs White-box testing:</b> Black-box = tester doesn't see internal code, tests input/output. White-box = tester sees and tests internal logic/code paths.</li>
+</ul>
+
+<h2>5b. SQL — Query Basics (high-probability MCQ area)</h2>
+<h3>Core syntax</h3>
+<pre>SELECT column1, column2 FROM table_name WHERE condition;
+INSERT INTO table_name (col1, col2) VALUES (val1, val2);
+UPDATE table_name SET col1 = val1 WHERE condition;
+DELETE FROM table_name WHERE condition;</pre>
+
+<h3>Aggregate functions</h3>
+<table>
+<tr><th>Function</th><th>Purpose</th></tr>
+<tr><td>COUNT()</td><td>Number of rows</td></tr>
+<tr><td>SUM()</td><td>Total of a numeric column</td></tr>
+<tr><td>AVG()</td><td>Average value</td></tr>
+<tr><td>MAX() / MIN()</td><td>Highest / lowest value</td></tr>
+</table>
+
+<h3>GROUP BY vs HAVING vs WHERE</h3>
+<ul>
+  <li><b>WHERE</b> filters rows <i>before</i> grouping.</li>
+  <li><b>GROUP BY</b> groups rows sharing a value into summary rows.</li>
+  <li><b>HAVING</b> filters groups <i>after</i> aggregation (WHERE can't be used with aggregate functions like COUNT/SUM directly — that's what HAVING is for).</li>
+</ul>
+<pre>SELECT department, COUNT(*) FROM employees
+WHERE status = 'active'
+GROUP BY department
+HAVING COUNT(*) > 5;</pre>
+
+<h3>DDL vs DML vs DCL vs TCL</h3>
+<table>
+<tr><th>Category</th><th>Commands</th><th>Purpose</th></tr>
+<tr><td>DDL</td><td>CREATE, ALTER, DROP, TRUNCATE</td><td>Defines structure (schema)</td></tr>
+<tr><td>DML</td><td>SELECT, INSERT, UPDATE, DELETE</td><td>Manipulates data</td></tr>
+<tr><td>DCL</td><td>GRANT, REVOKE</td><td>Access control/permissions</td></tr>
+<tr><td>TCL</td><td>COMMIT, ROLLBACK, SAVEPOINT</td><td>Transaction control</td></tr>
+</table>
+
+<h3>Common traps in MCQs</h3>
+<ul>
+  <li><b>DELETE vs TRUNCATE vs DROP:</b> DELETE removes rows (can use WHERE, can rollback if in transaction). TRUNCATE removes all rows fast, resets identity, can't use WHERE, harder to rollback. DROP removes the entire table structure.</li>
+  <li><b>WHERE vs HAVING:</b> classic trap — remember WHERE can't filter on aggregate results, HAVING can.</li>
+  <li><b>UNION vs UNION ALL:</b> UNION removes duplicates, UNION ALL keeps them (and is faster since it skips the dedup step).</li>
+</ul>
+
+<h2>MCQ Self-Test — JD & Basics (answers below each set, cover and try first)</h2>
+<div class="box">Do these cold first, then check answers. This tells you where your real gaps are tonight, not just what you already know.</div>
+
+<h3>Set A — OOP / DS</h3>
+<ol>
+  <li>Which OOP principle allows a subclass to provide a specific implementation of a method already defined in its parent class?<br>
+  <i>Answer: Polymorphism (specifically, method overriding)</i></li>
+  <li>What is the time complexity of searching in a balanced Binary Search Tree?<br>
+  <i>Answer: O(log n)</i></li>
+  <li>Which data structure uses FIFO ordering?<br>
+  <i>Answer: Queue</i></li>
+  <li>What's the key difference between an abstract class and an interface?<br>
+  <i>Answer: Abstract class can have implemented methods and state; interface traditionally only declares method signatures.</i></li>
+</ol>
+
+<h3>Set B — Database / SQL</h3>
+<ol>
+  <li>Which SQL clause is used to filter grouped results based on an aggregate condition?<br>
+  <i>Answer: HAVING</i></li>
+  <li>Which normal form eliminates transitive dependency?<br>
+  <i>Answer: 3NF</i></li>
+  <li>What does the 'I' in ACID stand for, and what does it guarantee?<br>
+  <i>Answer: Isolation — concurrent transactions don't interfere with each other.</i></li>
+  <li>What's the difference between INNER JOIN and LEFT JOIN?<br>
+  <i>Answer: INNER JOIN returns only matching rows; LEFT JOIN returns all rows from the left table plus matches (NULL if none).</i></li>
+</ol>
+
+<h3>Set C — Performance Testing / OS / Network (JD-specific)</h3>
+<ol>
+  <li>What type of testing pushes a system beyond normal capacity to find its breaking point?<br>
+  <i>Answer: Stress testing</i></li>
+  <li>Which JMeter element simulates concurrent users?<br>
+  <i>Answer: Thread Group</i></li>
+  <li>What Linux command shows live CPU and memory usage per process?<br>
+  <i>Answer: top (or htop)</i></li>
+  <li>What's the difference between latency and throughput?<br>
+  <i>Answer: Latency = time for one request to complete; throughput = number of requests handled per unit time.</i></li>
+  <li>TCP or UDP — which is used when reliability matters more than speed?<br>
+  <i>Answer: TCP</i></li>
+</ol>
+
+<h2>6. Essay Writing — Practice Plan for Tonight</h2>
+<div class="box">
+<b>You flagged this yourself:</b> mind thinks in Urdu/mixed language, writing in English slows you down, and this is a graded communication check with no AI allowed. This needs deliberate practice tonight, not just reading tips.
+</div>
+
+<h3>Structure to memorize (use for ANY topic they give you)</h3>
+<ol>
+  <li><b>Intro (3-4 sentences):</b> State the topic, your position/stance clearly, and briefly preview your 2-3 supporting points.</li>
+  <li><b>Body Paragraph 1:</b> One clear point + one concrete example or reason supporting it.</li>
+  <li><b>Body Paragraph 2:</b> Second point, ideally a different angle (not repeating point 1 in different words).</li>
+  <li><b>Body Paragraph 3 (optional, if time allows):</b> Counter-argument + why your position still holds — this shows analytical depth, which is explicitly graded.</li>
+  <li><b>Conclusion (2-3 sentences):</b> Restate your position, summarize briefly, end with a forward-looking or broader statement.</li>
+</ol>
+
+<h3>What graders are actually scoring — map your effort here</h3>
+<ul>
+  <li><b>Ideas & analysis:</b> Don't just describe the topic — take a clear stance and analyze <i>why</i>, not just <i>what</i>.</li>
+  <li><b>Development & support:</b> Every claim needs a reason or example. Don't leave a statement floating unsupported.</li>
+  <li><b>Organization:</b> Stick to the paragraph structure above. A grader should be able to tell where your intro ends and each point begins.</li>
+  <li><b>Language & conventions:</b> Simple, correct sentences beat complex, error-filled ones. Don't reach for big words you're unsure of — clarity scores higher than vocabulary.</li>
+</ul>
+
+<h3>Tonight's practice drill — use YOUR real experiences, not generic topics</h3>
+<div class="box">
+Real i2c essay topics are general ("Is technology making us less social?", "Discipline vs talent" etc.) — you won't get to pick "write about your FYP." But practicing tonight with a real story you actually lived is far more useful than a generic topic, because:
+<ul>
+<li>You already know the details cold — no time wasted inventing content, so you can focus purely on structure and English.</li>
+<li>Many general essay prompts (resilience, problem-solving, teamwork, adapting to setbacks) can be answered USING a real story like this as your example/evidence — so this practice transfers directly.</li>
+</ul>
+</div>
+
+<h3>Practice Essay 1 — FYP partner situation</h3>
+<p><b>Prompt to practice with:</b> "Describe a time you had to overcome an unexpected setback in a team project. What did you learn?"</p>
+<p><b>Your outline (fill in your real specifics before writing):</b></p>
+<ol>
+  <li><b>Intro:</b> State that teamwork often breaks down when a partner doesn't deliver, and that your FYP (HealthMate) taught you how to handle this.</li>
+  <li><b>Body 1 — what happened:</b> Briefly state your partner situation factually (don't over-explain blame — keep it professional and neutral in tone, since this is a graded communication sample, not a complaint).</li>
+  <li><b>Body 2 — what you did:</b> How you adapted — picked up extra scope, adjusted timeline, communicated with your supervisor, or restructured tasks.</li>
+  <li><b>Body 3 (optional) — what you'd do differently:</b> Shows self-awareness, which graders reward — e.g. clearer task division from day one, earlier check-ins.</li>
+  <li><b>Conclusion:</b> What this taught you about ownership/reliability — tie back to why this makes you a stronger team member now.</li>
+</ol>
+
+<h3>Practice Essay 2 — Laptop/technical failure under pressure</h3>
+<p><b>Prompt to practice with:</b> "Write about a time a plan didn't go as expected and how you responded."</p>
+<p><b>Your outline:</b></p>
+<ol>
+  <li><b>Intro:</b> State the situation briefly — a critical moment (assignment, demo, deadline) disrupted by a laptop/technical issue outside your control.</li>
+  <li><b>Body 1:</b> What broke and when — keep it factual, 2-3 sentences, don't dwell.</li>
+  <li><b>Body 2:</b> What you actually did about it — borrowed a machine, worked from a backup, used cloud storage, stayed up to redo work, informed the right person in time.</li>
+  <li><b>Body 3 (optional):</b> The broader lesson — importance of backups, version control (GitHub — genuinely relevant to you), not depending on a single point of failure.</li>
+  <li><b>Conclusion:</b> Tie it to how you now build in safeguards (e.g. pushing to GitHub regularly) — shows growth, not just survival.</li>
+</ol>
+
+<h3>Actual drill — do this now</h3>
+<ol>
+  <li>Pick ONE of the two above (whichever story you remember more clearly).</li>
+  <li>Set a 25-minute timer. Handwrite the full essay using the outline — no typing, no AI, exactly like the real test conditions.</li>
+  <li>Read it back once. Check: clear stance/lesson stated? Each paragraph has one point? Tone stays professional, not complaining?</li>
+  <li>If time allows, do the second story too. Two real, well-structured essays tonight beats ten topics only read and not written.</li>
+</ol>
+<div class="warn"><b>Important tone note:</b> if a partner or teammate comes up in your real essay, keep the language neutral and focused on your own actions/response — not blame. Graders (and any interviewer) read blame-heavy writing as a red flag about how you handle conflict, regardless of who was actually at fault.</div>
+
+<h3>Other general topics that could come up (less prep value than your own stories, but know the structure applies)</h3>
+<ul>
+  <li>Technology's impact on daily life / jobs</li>
+  <li>Discipline vs natural talent</li>
+  <li>Social media — benefit or harm</li>
+  <li>Importance of time management</li>
+</ul>
+
+<h2>7. Sample Essays — Full Written Examples</h2>
+<div class="box">These are model answers, not something to memorize word-for-word — the real prompt will be worded differently. Study the structure, sentence length, and how each paragraph does exactly one job. Then write your own version by hand, in your own words, using your real details.</div>
+
+<h3>Sample 1 — Prompt: "Describe a time you had to overcome an unexpected setback in a team project. What did you learn?"</h3>
+<div class="box" style="background:#f4f6f8; border-color:#c9d2da;">
+<p>During my final year project, my team was responsible for building a mobile health application that combined a machine learning model with a mobile front end. Midway through the semester, one of my project partners became unavailable due to personal reasons and was unable to continue contributing to the assigned modules. This left a gap in the project at a stage when the deadline was already fixed and could not be extended.</p>
+
+<p>Rather than waiting for the situation to resolve itself, I reorganized the remaining work between the active team members. I took on the modules that had been left incomplete, in addition to my own responsibilities, and set a stricter internal schedule to make sure each component was tested before integration. I also began checking in with my supervisor more frequently, so that any further delays would be visible early rather than discovered close to submission.</p>
+
+<p>Looking back, I learned that clear task ownership from the very beginning of a project matters more than I had assumed. If responsibilities and expected contributions had been documented explicitly at the start, the transition when a team member became unavailable would have been smoother. I now apply this lesson by defining clear scope and check-in points at the start of any group work, rather than assuming informal coordination will be enough.</p>
+
+<p>This experience did not just teach me how to complete a project under pressure — it taught me that reliability is something you build into a plan in advance, not something you rely on from other people alone.</p>
+</div>
+
+<h3>Sample 2 — Prompt: "Write about a time a plan didn't go as expected and how you responded."</h3>
+<div class="box" style="background:#f4f6f8; border-color:#c9d2da;">
+<p>A few days before an important project submission, my laptop stopped working correctly, and I was unable to access it for several hours during a period when I still had testing and final adjustments to complete. At that point in the project, most of my recent work existed only on that machine, and the deadline did not move to accommodate the disruption.</p>
+
+<p>My first step was to check what could still be recovered. Because I had been pushing my code to GitHub regularly, I was able to retrieve the most recent working version of my project from there rather than starting over. I then arranged to use another computer to continue the remaining work, and prioritized the most critical remaining tasks first, in case time ran short again.</p>
+
+<p>The situation was resolved without losing significant progress, but it made clear to me how easily a single point of failure can put an entire project at risk. Since then, I have made version control and regular backups a standard part of how I work, rather than something I do only when I remember to.</p>
+
+<p>What this experience taught me is that planning for failure is as important as planning for success. Systems and habits that seem like extra effort in the moment — like committing code frequently — are often what actually protect the work when something goes wrong unexpectedly.</p>
+</div>
+
+<h3>Sample 3 — General topic: "Is discipline more important than talent for success?"</h3>
+<div class="box" style="background:#f4f6f8; border-color:#c9d2da;">
+<p>Talent is often treated as the deciding factor in success, but in practice, discipline plays a far larger role in determining who actually achieves long-term results. Talent may explain why someone starts strong, but it rarely explains why someone continues improving over months or years.</p>
+
+<p>Consider two people learning the same skill. The more talented person may progress faster in the beginning, but without consistent effort, that early advantage tends to fade. The person who shows up regularly, practices even when progress feels slow, and corrects their mistakes over time will typically overtake a naturally gifted but inconsistent counterpart. This pattern appears across fields, from academics to sports to professional work.</p>
+
+<p>Discipline also compensates for a lack of natural ability in ways that talent alone cannot replace. A less naturally skilled person who works steadily can close the gap over time, while raw talent without effort tends to plateau. This does not mean talent is irrelevant — it can accelerate progress — but it is not sufficient on its own.</p>
+
+<p>In conclusion, while talent may open doors early, discipline is what allows someone to walk through them and keep moving forward. Long-term success depends less on where someone starts and more on how consistently they choose to keep working.</p>
+</div>
+
+<h3>How to use these three samples tonight</h3>
+<ol>
+  <li>Read Sample 1 and Sample 3 once, closely — notice each paragraph has exactly one job (setup, action, reflection, conclusion).</li>
+  <li>Cover them, then handwrite your own version of Sample 2 (the laptop story) in 25 minutes, in your own words, without looking back at the model.</li>
+  <li>Compare your version to the sample only after finishing — check structure and clarity, not word-for-word similarity.</li>
+</ol>
+
+<h2>8. Final Notes</h2>
+<ul>
+  <li>MCQs: don't overthink — most are definition/recall level based on this list. Trust your first instinct if you genuinely studied the term before.</li>
+  <li>Essay: structure beats eloquence. A clearly organized, simply written essay scores higher than an ambitious one with grammar mistakes and no clear stance.</li>
+  <li>You get pen and paper for rough work — use it to outline your essay (3-4 bullet points) before writing, even under time pressure. Two minutes of planning saves you from a disorganized essay.</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nextscrum Full Stack Interview</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0f;color:#e8e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:13.5px;line-height:1.5}
+.page{max-width:1200px;margin:0 auto;padding:20px 18px 60px}
+
+.hdr{background:linear-gradient(135deg,#0d1b2a 0%,#1b263b 50%,#0d2137 100%);border:1px solid #1e3a5f;border-radius:12px;padding:18px 26px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.hdr h1{font-size:21px;font-weight:700;color:#fff}.hdr p{color:#6a8caa;font-size:12px;margin-top:3px}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.04em}
+.ch-r{background:rgba(248,81,73,.15);color:#f85149;border:1px solid rgba(248,81,73,.3)}
+.ch-a{background:rgba(210,153,34,.15);color:#e3a008;border:1px solid rgba(210,153,34,.3)}
+.ch-g{background:rgba(63,185,80,.15);color:#3fb950;border:1px solid rgba(63,185,80,.3)}
+.ch-b{background:rgba(88,166,255,.15);color:#58a6ff;border:1px solid rgba(88,166,255,.3)}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+@media(max-width:760px){.grid,.grid3{grid-template-columns:1fr}.full{grid-column:1}}
+
+.card{background:#0e0e18;border:1px solid #1e1e35;border-radius:9px;overflow:hidden}
+.ch{padding:9px 13px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #1e1e35}
+.ch h2{font-size:13px;font-weight:700;color:#fff;flex:1}
+.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.05em}
+.cb{padding:11px 13px}
+
+.lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#4a4a6a;margin:10px 0 5px}
+.lbl:first-child{margin-top:0}
+
+table{width:100%;border-collapse:collapse;font-size:12px;margin:5px 0}
+th{background:#131325;color:#7070a0;font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:5px 9px;text-align:left;border-bottom:1px solid #1e1e35}
+td{padding:4px 9px;border-bottom:1px solid #141428;color:#a8a8c0;vertical-align:top}
+tr:last-child td{border-bottom:none}
+td code,th code{font-family:'Fira Code',monospace;font-size:10.5px;background:#181830;color:#82aaff;padding:1px 4px;border-radius:3px}
+td strong{color:#ccd}
+
+ul.pts{list-style:none;padding:0}
+ul.pts li{padding:3px 0 3px 14px;position:relative;color:#a0a0c0;font-size:12.5px;border-bottom:1px solid #141428}
+ul.pts li:last-child{border-bottom:none}
+ul.pts li::before{content:'›';position:absolute;left:0;color:#3366cc;font-weight:700}
+ul.pts li strong{color:#cce}
+ul.pts li code{font-family:'Fira Code',monospace;font-size:11px;background:#181830;color:#82aaff;padding:1px 4px;border-radius:3px}
+
+pre{background:#07070f;border:1px solid #1a1a30;border-radius:7px;padding:9px 11px;overflow-x:auto;font-family:'Fira Code','Courier New',monospace;font-size:11px;line-height:1.65;color:#cdd6f4;margin:7px 0}
+pre .c{color:#4a4a6a;font-style:italic}
+pre .k{color:#cba6f7}
+pre .s{color:#a6e3a1}
+pre .f{color:#89b4fa}
+pre .n{color:#fab387}
+pre .t{color:#94e2d5}
+
+.ans{background:#0a180a;border:1px solid #163016;border-radius:6px;padding:9px 11px;margin:6px 0}
+.ans .q{color:#3fb950;font-size:10.5px;font-weight:700;letter-spacing:.05em;margin-bottom:4px}
+.ans p{color:#a8c8a8;font-size:12px}
+
+.hbox{border-radius:6px;padding:8px 11px;margin:7px 0;font-size:12px}
+.hbox.warn{background:rgba(248,81,73,.06);border:1px solid rgba(248,81,73,.2);color:#e89898}
+.hbox.tip{background:rgba(63,185,80,.06);border:1px solid rgba(63,185,80,.2);color:#88c898}
+.hbox.info{background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);color:#88aae0}
+.hbox.exam{background:rgba(210,153,34,.06);border:1px solid rgba(210,153,34,.2);color:#c8a860}
+.hbox strong{color:inherit}
+
+.sec{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#3366cc;padding:14px 0 8px;border-top:1px solid #161628;margin-top:4px}
+.sec:first-child{border-top:none;padding-top:0}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hdr">
+  <div><h1>Nextscrum · Full Stack Dev — Written Assessment</h1><p>Mon Jun 22 · 3:30 PM · 11G PIA Main Blvd Lahore · Paper-based technical + coding test</p></div>
+  <div class="chips">
+    <span class="chip ch-r">OOP C++</span><span class="chip ch-r">DSA</span><span class="chip ch-r">SQL</span>
+    <span class="chip ch-a">MERN</span><span class="chip ch-a">React</span><span class="chip ch-g">OS/Net</span>
+    <span class="chip ch-b">Python/AI</span>
+  </div>
+</div>
+
+<!-- ─── BAND 1: OOP + DSA ─── -->
+<div class="grid">
+
+<div class="card">
+  <div class="ch"><h2>OOP — C++ (40% of paper likely)</h2><span class="badge ch-r">HIGH</span></div>
+  <div class="cb">
+    <div class="lbl">4 Pillars — one-liner each</div>
+    <table>
+      <tr><th>Pillar</th><th>Definition</th></tr>
+      <tr><td><strong>Encapsulation</strong></td><td>Bundle data + methods, hide internal state via private + getters/setters</td></tr>
+      <tr><td><strong>Abstraction</strong></td><td>Hide complex implementation, expose only what's needed (interfaces/pure virtual)</td></tr>
+      <tr><td><strong>Inheritance</strong></td><td>Child class acquires parent's properties/methods. Promotes code reuse.</td></tr>
+      <tr><td><strong>Polymorphism</strong></td><td>One interface, many implementations. Same function behaves differently per object.</td></tr>
+    </table>
+
+    <div class="lbl">Overloading vs Overriding (static vs dynamic binding)</div>
+<pre><span class="c">// OVERLOADING — same name, diff params, COMPILE TIME (static/early binding)</span>
+<span class="k">int</span>    <span class="f">add</span>(<span class="k">int</span> a, <span class="k">int</span> b)       { <span class="k">return</span> a+b; }
+<span class="k">double</span> <span class="f">add</span>(<span class="k">double</span> a, <span class="k">double</span> b) { <span class="k">return</span> a+b; }
+<span class="k">void</span>   <span class="f">print</span>(<span class="k">int</span> x)  { cout&lt;&lt;x; }
+<span class="k">void</span>   <span class="f">print</span>(<span class="t">string</span> x){ cout&lt;&lt;x; }
+
+<span class="c">// OVERRIDING — child redefines parent, RUNTIME (dynamic/late binding)</span>
+<span class="k">class</span> Animal {
+  <span class="k">public</span>: <span class="k">virtual void</span> <span class="f">speak</span>() { cout&lt;&lt;<span class="s">"..."</span>; }
+};
+<span class="k">class</span> Dog : <span class="k">public</span> Animal {
+  <span class="k">public</span>: <span class="k">void</span> <span class="f">speak</span>() <span class="k">override</span> { cout&lt;&lt;<span class="s">"Woof"</span>; }
+};
+Animal* a = <span class="k">new</span> Dog();
+a-&gt;<span class="f">speak</span>(); <span class="c">// "Woof" — resolved at RUNTIME via vtable</span></pre>
+    <div class="hbox exam"><strong>Key line:</strong> "Overloading = static binding (compile-time). Overriding = dynamic binding (runtime via virtual functions/vtable)."</div>
+
+    <div class="lbl">Abstract Class vs Interface</div>
+    <table>
+      <tr><th></th><th>Abstract Class (C++)</th><th>Interface (Java concept)</th></tr>
+      <tr><td>Has body?</td><td>can have implemented + pure virtual methods</td><td>all methods abstract (no body)</td></tr>
+      <tr><td>In C++</td><td>any class with ≥1 pure virtual (<code>=0</code>) method</td><td>achieved via abstract class with all pure virtual</td></tr>
+      <tr><td>Instantiate?</td><td>NO</td><td>NO</td></tr>
+    </table>
+<pre><span class="k">class</span> Shape {  <span class="c">// abstract class</span>
+  <span class="k">public</span>:
+    <span class="k">virtual double</span> <span class="f">area</span>() = <span class="n">0</span>;     <span class="c">// pure virtual — must override</span>
+    <span class="k">virtual void</span>   <span class="f">draw</span>() = <span class="n">0</span>;
+    <span class="k">void</span> <span class="f">describe</span>() { cout&lt;&lt;<span class="s">"I am a shape"</span>; } <span class="c">// has implementation</span>
+};
+<span class="k">class</span> Circle : <span class="k">public</span> Shape {
+  <span class="k">double</span> r;
+  <span class="k">public</span>:
+    Circle(<span class="k">double</span> r): r(r){}
+    <span class="k">double</span> <span class="f">area</span>()  <span class="k">override</span> { <span class="k">return</span> <span class="n">3.14</span>*r*r; }
+    <span class="k">void</span>   <span class="f">draw</span>()  <span class="k">override</span> { cout&lt;&lt;<span class="s">"○"</span>; }
+};
+<span class="c">// Shape s;  // ERROR - cannot instantiate abstract class</span>
+Circle c(<span class="n">5</span>); <span class="c">// OK</span></pre>
+
+    <div class="lbl">Constructor vs Destructor</div>
+<pre><span class="k">class</span> Student {
+  <span class="k">int</span>* scores;
+  <span class="k">public</span>:
+    <span class="f">Student</span>(<span class="k">int</span> n) {           <span class="c">// Constructor - called on object creation</span>
+      scores = <span class="k">new int</span>[n];
+      cout &lt;&lt; <span class="s">"Created\n"</span>;
+    }
+    ~<span class="f">Student</span>() {               <span class="c">// Destructor - called on object destruction</span>
+      <span class="k">delete</span>[] scores;         <span class="c">// free dynamic memory</span>
+      cout &lt;&lt; <span class="s">"Destroyed\n"</span>;
+    }
+    <span class="f">Student</span>(<span class="k">const</span> Student&amp; s) { <span class="c">// Copy constructor</span>
+      scores = <span class="k">new int</span>[<span class="n">10</span>];
+      <span class="c">// deep copy — own memory, not shared pointer</span>
+    }
+};
+<span class="c">// Order: Constructor runs first. Destructor runs when scope ends or delete called.</span></pre>
+
+    <div class="lbl">this pointer + static members</div>
+<pre><span class="k">class</span> Counter {
+    <span class="k">static int</span> count;    <span class="c">// shared across ALL objects, one copy</span>
+    <span class="k">int</span> id;
+  <span class="k">public</span>:
+    <span class="f">Counter</span>() { id = ++count; }
+    <span class="k">static int</span> <span class="f">getCount</span>()  { <span class="k">return</span> count; }
+    Counter&amp; <span class="f">setId</span>(<span class="k">int</span> x) { <span class="k">this</span>-&gt;id = x; <span class="k">return</span> *<span class="k">this</span>; } <span class="c">// this = ptr to current obj</span>
+};
+<span class="k">int</span> Counter::count = <span class="n">0</span>;
+Counter c1, c2, c3;
+cout &lt;&lt; Counter::<span class="f">getCount</span>(); <span class="c">// 3</span></pre>
+
+    <div class="lbl">Friend function + Operator overloading</div>
+<pre><span class="k">class</span> Complex {
+    <span class="k">int</span> r, i;
+  <span class="k">public</span>:
+    <span class="f">Complex</span>(<span class="k">int</span> r=<span class="n">0</span>, <span class="k">int</span> i=<span class="n">0</span>): r(r), i(i){}
+    Complex <span class="k">operator</span>+(<span class="k">const</span> Complex&amp; c) { <span class="c">// overload +</span>
+        <span class="k">return</span> <span class="f">Complex</span>(r+c.r, i+c.i);
+    }
+    <span class="k">friend</span> <span class="k">void</span> <span class="f">show</span>(Complex c); <span class="c">// friend can access private r,i</span>
+};
+<span class="k">void</span> <span class="f">show</span>(Complex c) { cout&lt;&lt;c.r&lt;&lt;<span class="s">"+"</span>&lt;&lt;c.i&lt;&lt;<span class="s">"i"</span>; }</pre>
+
+    <div class="lbl">Multiple Inheritance + Diamond Problem</div>
+<pre><span class="k">class</span> A { <span class="k">public</span>: <span class="k">void</span> <span class="f">show</span>(){cout&lt;&lt;<span class="s">"A"</span>;} };
+<span class="k">class</span> B : <span class="k">public</span> A {};
+<span class="k">class</span> C : <span class="k">public</span> A {};
+<span class="k">class</span> D : <span class="k">public</span> B, <span class="k">public</span> C {}; <span class="c">// diamond: two copies of A</span>
+D obj;
+<span class="c">// obj.show();  ERROR - ambiguous. Fix: virtual inheritance</span>
+obj.B::<span class="f">show</span>();  <span class="c">// explicit resolution</span>
+
+<span class="c">// Fix with virtual inheritance:</span>
+<span class="k">class</span> B : <span class="k">virtual public</span> A {};
+<span class="k">class</span> C : <span class="k">virtual public</span> A {};
+<span class="c">// Now D has only ONE copy of A</span></pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch"><h2>DSA — C++ Coding Problems</h2><span class="badge ch-r">HIGH</span></div>
+  <div class="cb">
+    <div class="lbl">Arrays — most tested patterns</div>
+<pre><span class="c">// 1. Reverse array — two pointer O(n) O(1)</span>
+<span class="k">void</span> <span class="f">reverse</span>(<span class="k">int</span> a[], <span class="k">int</span> n) {
+    <span class="k">int</span> l=<span class="n">0</span>, r=n-<span class="n">1</span>;
+    <span class="k">while</span>(l&lt;r) { swap(a[l++], a[r--]); }
+}
+
+<span class="c">// 2. Second largest O(n) O(1)</span>
+<span class="k">int</span> <span class="f">secondLargest</span>(<span class="k">int</span> a[], <span class="k">int</span> n) {
+    <span class="k">int</span> first=INT_MIN, second=INT_MIN;
+    <span class="k">for</span>(<span class="k">int</span> i=<span class="n">0</span>;i&lt;n;i++) {
+        <span class="k">if</span>(a[i]&gt;first) { second=first; first=a[i]; }
+        <span class="k">else if</span>(a[i]&gt;second &amp;&amp; a[i]!=first) second=a[i];
+    }
+    <span class="k">return</span> second;
+}
+
+<span class="c">// 3. Remove duplicates (sorted) O(n) O(1)</span>
+<span class="k">int</span> <span class="f">removeDuplicates</span>(<span class="k">int</span> a[], <span class="k">int</span> n) {
+    <span class="k">int</span> j=<span class="n">0</span>;
+    <span class="k">for</span>(<span class="k">int</span> i=<span class="n">1</span>;i&lt;n;i++)
+        <span class="k">if</span>(a[i]!=a[j]) a[++j]=a[i];
+    <span class="k">return</span> j+<span class="n">1</span>; <span class="c">// new length</span>
+}
+
+<span class="c">// 4. Two Sum — HashMap O(n) O(n)</span>
+<span class="k">#include</span> &lt;unordered_map&gt;
+<span class="f">pair</span>&lt;<span class="k">int</span>,<span class="k">int</span>&gt; <span class="f">twoSum</span>(<span class="k">int</span> a[], <span class="k">int</span> n, <span class="k">int</span> target) {
+    unordered_map&lt;<span class="k">int</span>,<span class="k">int</span>&gt; seen;
+    <span class="k">for</span>(<span class="k">int</span> i=<span class="n">0</span>;i&lt;n;i++) {
+        <span class="k">int</span> comp=target-a[i];
+        <span class="k">if</span>(seen.count(comp)) <span class="k">return</span> {seen[comp],i};
+        seen[a[i]]=i;
+    }
+    <span class="k">return</span> {-<span class="n">1</span>,-<span class="n">1</span>};
+}</pre>
+
+    <div class="lbl">Strings</div>
+<pre><span class="c">// Palindrome check O(n) O(1)</span>
+<span class="k">bool</span> <span class="f">isPalindrome</span>(<span class="t">string</span> s) {
+    <span class="k">int</span> l=<span class="n">0</span>, r=s.<span class="f">size</span>()-<span class="n">1</span>;
+    <span class="k">while</span>(l&lt;r) <span class="k">if</span>(s[l++]!=s[r--]) <span class="k">return false</span>;
+    <span class="k">return true</span>;
+}
+
+<span class="c">// Frequency count O(n) O(k)</span>
+<span class="k">void</span> <span class="f">freq</span>(<span class="t">string</span> s) {
+    unordered_map&lt;<span class="k">char</span>,<span class="k">int</span>&gt; mp;
+    <span class="k">for</span>(<span class="k">char</span> c:s) mp[c]++;
+    <span class="k">for</span>(<span class="k">auto</span>&amp; p:mp) cout&lt;&lt;p.first&lt;&lt;<span class="s">":"</span>&lt;&lt;p.second&lt;&lt;<span class="s">"\n"</span>;
+}</pre>
+
+    <div class="lbl">Binary Search O(log n)</div>
+<pre><span class="k">int</span> <span class="f">binarySearch</span>(<span class="k">int</span> a[], <span class="k">int</span> n, <span class="k">int</span> target) {
+    <span class="k">int</span> l=<span class="n">0</span>, r=n-<span class="n">1</span>;
+    <span class="k">while</span>(l&lt;=r) {
+        <span class="k">int</span> mid=l+(r-l)/<span class="n">2</span>;  <span class="c">// avoids overflow vs (l+r)/2</span>
+        <span class="k">if</span>(a[mid]==target) <span class="k">return</span> mid;
+        <span class="k">else if</span>(a[mid]&lt;target) l=mid+<span class="n">1</span>;
+        <span class="k">else</span> r=mid-<span class="n">1</span>;
+    }
+    <span class="k">return</span> -<span class="n">1</span>;
+}</pre>
+
+    <div class="lbl">Linked List — fast-slow pointer</div>
+<pre><span class="k">struct</span> Node { <span class="k">int</span> data; Node* next; };
+
+<span class="c">// Detect cycle — Floyd's algorithm O(n) O(1)</span>
+<span class="k">bool</span> <span class="f">hasCycle</span>(Node* head) {
+    Node *slow=head, *fast=head;
+    <span class="k">while</span>(fast &amp;&amp; fast-&gt;next) {
+        slow=slow-&gt;next; fast=fast-&gt;next-&gt;next;
+        <span class="k">if</span>(slow==fast) <span class="k">return true</span>;
+    }
+    <span class="k">return false</span>;
+}
+
+<span class="c">// Reverse linked list O(n) O(1)</span>
+Node* <span class="f">reverse</span>(Node* head) {
+    Node *prev=<span class="k">nullptr</span>, *curr=head, *next;
+    <span class="k">while</span>(curr) {
+        next=curr-&gt;next;
+        curr-&gt;next=prev;
+        prev=curr; curr=next;
+    }
+    <span class="k">return</span> prev;
+}</pre>
+
+    <div class="lbl">Stack — sort using 2nd stack</div>
+<pre><span class="c">// Sort stack using extra stack O(n²) O(n)</span>
+<span class="k">void</span> <span class="f">sortStack</span>(stack&lt;<span class="k">int</span>&gt;&amp; s) {
+    stack&lt;<span class="k">int</span>&gt; temp;
+    <span class="k">while</span>(!s.<span class="f">empty</span>()) {
+        <span class="k">int</span> curr=s.<span class="f">top</span>(); s.<span class="f">pop</span>();
+        <span class="k">while</span>(!temp.<span class="f">empty</span>() &amp;&amp; temp.<span class="f">top</span>()&gt;curr) {
+            s.<span class="f">push</span>(temp.<span class="f">top</span>()); temp.<span class="f">pop</span>();
+        }
+        temp.<span class="f">push</span>(curr);
+    }
+    <span class="k">while</span>(!temp.<span class="f">empty</span>()) { s.<span class="f">push</span>(temp.<span class="f">top</span>()); temp.<span class="f">pop</span>(); }
+}</pre>
+
+    <div class="lbl">BFS + DFS (graph)</div>
+<pre><span class="c">// BFS — uses queue, level-order, shortest path unweighted</span>
+<span class="k">void</span> <span class="f">bfs</span>(vector&lt;vector&lt;<span class="k">int</span>&gt;&gt;&amp; adj, <span class="k">int</span> src, <span class="k">int</span> n) {
+    vector&lt;<span class="k">bool</span>&gt; vis(n,<span class="k">false</span>);
+    queue&lt;<span class="k">int</span>&gt; q;
+    vis[src]=<span class="k">true</span>; q.<span class="f">push</span>(src);
+    <span class="k">while</span>(!q.<span class="f">empty</span>()) {
+        <span class="k">int</span> u=q.<span class="f">front</span>(); q.<span class="f">pop</span>(); cout&lt;&lt;u&lt;&lt;<span class="s">" "</span>;
+        <span class="k">for</span>(<span class="k">int</span> v:adj[u]) <span class="k">if</span>(!vis[v]) { vis[v]=<span class="k">true</span>; q.<span class="f">push</span>(v); }
+    }
+}
+<span class="c">// DFS — uses stack/recursion, explore deep first</span>
+<span class="k">void</span> <span class="f">dfs</span>(vector&lt;vector&lt;<span class="k">int</span>&gt;&gt;&amp; adj, <span class="k">int</span> u, vector&lt;<span class="k">bool</span>&gt;&amp; vis) {
+    vis[u]=<span class="k">true</span>; cout&lt;&lt;u&lt;&lt;<span class="s">" "</span>;
+    <span class="k">for</span>(<span class="k">int</span> v:adj[u]) <span class="k">if</span>(!vis[v]) <span class="f">dfs</span>(adj,v,vis);
+}</pre>
+
+    <div class="lbl">Complexity cheat sheet</div>
+    <table>
+      <tr><th>Algorithm</th><th>Time</th><th>Space</th></tr>
+      <tr><td>Binary Search</td><td>O(log n)</td><td>O(1)</td></tr>
+      <tr><td>Merge Sort</td><td>O(n log n)</td><td>O(n)</td></tr>
+      <tr><td>Quick Sort avg/worst</td><td>O(n log n) / O(n²)</td><td>O(log n)</td></tr>
+      <tr><td>HashMap get/put</td><td>O(1) avg</td><td>O(n)</td></tr>
+      <tr><td>BST search (balanced)</td><td>O(log n)</td><td>O(n)</td></tr>
+      <tr><td>BFS / DFS</td><td>O(V+E)</td><td>O(V)</td></tr>
+    </table>
+  </div>
+</div>
+
+</div><!-- /grid -->
+
+<!-- ─── BAND 2: SQL (full width) ─── -->
+<div class="card full" style="margin-top:12px">
+  <div class="ch"><h2>SQL — All Patterns (25% of paper)</h2><span class="badge ch-r">HIGH</span></div>
+  <div class="cb">
+    <div class="grid3">
+      <div>
+        <div class="lbl">JOINs</div>
+<pre><span class="c">-- INNER: matching rows only</span>
+<span class="k">SELECT</span> e.name, d.dept_name
+<span class="k">FROM</span> employees e
+<span class="k">JOIN</span> departments d <span class="k">ON</span> e.dept_id=d.id;
+
+<span class="c">-- LEFT: all employees, dept may be null</span>
+<span class="k">SELECT</span> e.name, d.dept_name
+<span class="k">FROM</span> employees e
+<span class="k">LEFT JOIN</span> departments d <span class="k">ON</span> e.dept_id=d.id;
+
+<span class="c">-- FULL JOIN (MySQL: emulate with UNION)</span>
+<span class="k">SELECT</span> * <span class="k">FROM</span> a <span class="k">LEFT JOIN</span> b <span class="k">ON</span> a.id=b.id
+<span class="k">UNION</span>
+<span class="k">SELECT</span> * <span class="k">FROM</span> a <span class="k">RIGHT JOIN</span> b <span class="k">ON</span> a.id=b.id;</pre>
+      </div>
+      <div>
+        <div class="lbl">2nd / 3rd Highest Salary</div>
+<pre><span class="c">-- 2nd highest (subquery method)</span>
+<span class="k">SELECT MAX</span>(salary) <span class="k">FROM</span> employees
+<span class="k">WHERE</span> salary &lt; (<span class="k">SELECT MAX</span>(salary)
+                <span class="k">FROM</span> employees);
+
+<span class="c">-- Nth highest — LIMIT + OFFSET</span>
+<span class="k">SELECT DISTINCT</span> salary
+<span class="k">FROM</span> employees
+<span class="k">ORDER BY</span> salary <span class="k">DESC</span>
+<span class="k">LIMIT</span> 1 <span class="k">OFFSET</span> 1; <span class="c">-- 2nd (offset 0=1st)</span>
+<span class="c">-- OFFSET 2 = 3rd highest</span>
+
+<span class="c">-- Above average salary</span>
+<span class="k">SELECT</span> name, salary <span class="k">FROM</span> employees
+<span class="k">WHERE</span> salary &gt; (<span class="k">SELECT AVG</span>(salary)
+                <span class="k">FROM</span> employees);</pre>
+      </div>
+      <div>
+        <div class="lbl">GROUP BY + HAVING + Dates</div>
+<pre><span class="c">-- Count employees per dept</span>
+<span class="k">SELECT</span> dept_id, <span class="f">COUNT</span>(*) <span class="k">AS</span> total
+<span class="k">FROM</span> employees
+<span class="k">GROUP BY</span> dept_id
+<span class="k">HAVING</span> <span class="f">COUNT</span>(*) &gt; 5;
+
+<span class="c">-- Max salary per dept</span>
+<span class="k">SELECT</span> dept, <span class="f">MAX</span>(salary)
+<span class="k">FROM</span> employees
+<span class="k">GROUP BY</span> dept;
+
+<span class="c">-- Last 30 days</span>
+<span class="k">SELECT</span> * <span class="k">FROM</span> orders
+<span class="k">WHERE</span> created_at &gt;=
+  <span class="f">DATE_SUB</span>(<span class="f">NOW</span>(), <span class="k">INTERVAL</span> <span class="n">30</span> <span class="k">DAY</span>);</pre>
+      </div>
+    </div>
+    <div class="hbox warn" style="margin-top:8px"><strong>WHERE vs HAVING:</strong> WHERE filters rows BEFORE GROUP BY. HAVING filters AFTER. Cannot use aggregate (COUNT, SUM, AVG) in WHERE. &nbsp;|&nbsp; <strong>DISTINCT:</strong> removes duplicate rows. Use in Nth highest so ties don't mess up offset.</div>
+
+    <div class="lbl">Correlated Subquery (ADVANCED — may appear)</div>
+<pre><span class="c">-- Find employee who earns more than avg of their OWN dept (not global avg)</span>
+<span class="k">SELECT</span> e1.name, e1.salary, e1.dept
+<span class="k">FROM</span> employees e1
+<span class="k">WHERE</span> e1.salary &gt; (
+    <span class="k">SELECT AVG</span>(e2.salary) <span class="k">FROM</span> employees e2
+    <span class="k">WHERE</span> e2.dept = e1.dept  <span class="c">-- references outer query's row</span>
+);
+<span class="c">-- Runs once PER ROW of outer query — that's what makes it "correlated"</span></pre>
+  </div>
+</div>
+
+<!-- ─── BAND 3: MERN + React + Node ─── -->
+<div class="grid" style="margin-top:12px">
+
+<div class="card">
+  <div class="ch"><h2>React — Hooks + State</h2><span class="badge ch-a">MED</span></div>
+  <div class="cb">
+    <div class="lbl">Hooks — what each does + when used</div>
+    <table>
+      <tr><th>Hook</th><th>Use</th><th>Key detail</th></tr>
+      <tr><td><code>useState</code></td><td>store reactive data</td><td>triggers re-render on change</td></tr>
+      <tr><td><code>useEffect</code></td><td>side effects — API, timers</td><td><code>[]</code>=once, <code>[x]</code>=when x changes, none=every render</td></tr>
+      <tr><td><code>useContext</code></td><td>global state without prop drilling</td><td>pairs with <code>createContext</code></td></tr>
+      <tr><td><code>useRef</code></td><td>DOM reference / persist value</td><td>change does NOT trigger re-render</td></tr>
+      <tr><td><code>useMemo</code></td><td>cache expensive value</td><td>recomputes only when deps change</td></tr>
+      <tr><td><code>useCallback</code></td><td>cache function reference</td><td>prevents child re-render on parent update</td></tr>
+    </table>
+
+<pre><span class="c">// Controlled form — very common task</span>
+<span class="k">const</span> [form, setForm] = <span class="f">useState</span>({name:<span class="s">''</span>, email:<span class="s">''</span>});
+
+<span class="k">const</span> <span class="f">handleChange</span> = e =&gt;
+  <span class="f">setForm</span>({...form, [e.target.name]: e.target.value});
+
+<span class="k">const</span> <span class="f">handleSubmit</span> = <span class="k">async</span> e =&gt; {
+  e.<span class="f">preventDefault</span>();
+  <span class="k">const</span> res = <span class="k">await</span> <span class="f">fetch</span>(<span class="s">'/api/users'</span>, {
+    method:<span class="s">'POST'</span>,
+    headers:{<span class="s">'Content-Type'</span>:<span class="s">'application/json'</span>},
+    body:<span class="f">JSON.stringify</span>(form)
+  });
+  <span class="k">const</span> data = <span class="k">await</span> res.<span class="f">json</span>();
+};</pre>
+
+    <div class="lbl">Props vs State</div>
+    <ul class="pts">
+      <li><strong>Props</strong> — passed from parent to child, read-only in child</li>
+      <li><strong>State</strong> — owned by component, mutable via setState/useState</li>
+      <li>Both cause re-render when changed</li>
+    </ul>
+
+    <div class="lbl">Why functional over class?</div>
+    <ul class="pts">
+      <li>No <code>this</code> binding bugs</li>
+      <li>Hooks replace all lifecycle methods (<code>componentDidMount</code> = <code>useEffect(fn,[])</code>)</li>
+      <li>Easier to share logic via custom hooks</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch"><h2>Node.js / Express + MongoDB</h2><span class="badge ch-a">MED</span></div>
+  <div class="cb">
+    <div class="lbl">Event Loop — most asked Node question</div>
+    <ul class="pts">
+      <li>Node is <strong>single-threaded but non-blocking</strong> — uses event loop to handle concurrency</li>
+      <li>Async operations (I/O, HTTP) go to libuv thread pool, callback queued when done</li>
+      <li>Never blocks the main thread — this is why Node is good for I/O-heavy apps, bad for CPU-heavy</li>
+    </ul>
+<pre><span class="c">// Promises vs Async/Await (same thing, different syntax)</span>
+<span class="c">// Promise chain</span>
+<span class="f">fetch</span>(<span class="s">'/api'</span>).<span class="f">then</span>(r=&gt;r.<span class="f">json</span>()).<span class="f">then</span>(d=&gt;console.<span class="f">log</span>(d)).<span class="f">catch</span>(console.error);
+
+<span class="c">// Async/Await (cleaner)</span>
+<span class="k">async function</span> <span class="f">getData</span>() {
+  <span class="k">try</span> {
+    <span class="k">const</span> res  = <span class="k">await</span> <span class="f">fetch</span>(<span class="s">'/api'</span>);
+    <span class="k">const</span> data = <span class="k">await</span> res.<span class="f">json</span>();
+    console.<span class="f">log</span>(data);
+  } <span class="k">catch</span>(err) { console.error(err); }
+}</pre>
+
+    <div class="lbl">Express middleware + routes</div>
+<pre><span class="k">const</span> express = <span class="f">require</span>(<span class="s">'express'</span>);
+<span class="k">const</span> app = <span class="f">express</span>();
+app.<span class="f">use</span>(express.<span class="f">json</span>());  <span class="c">// parse JSON body</span>
+
+<span class="c">// Custom middleware</span>
+<span class="k">const</span> <span class="f">auth</span> = (req,res,next) =&gt; {
+  <span class="k">const</span> token = req.headers.authorization;
+  <span class="k">if</span>(!token) <span class="k">return</span> res.<span class="f">status</span>(<span class="n">401</span>).<span class="f">json</span>({err:<span class="s">'No token'</span>});
+  next(); <span class="c">// pass to next handler</span>
+};
+
+app.<span class="f">get</span>(<span class="s">'/users'</span>, auth, <span class="k">async</span>(req,res) =&gt; {
+  <span class="k">const</span> users = <span class="k">await</span> User.<span class="f">find</span>({});
+  res.<span class="f">json</span>(users);
+});</pre>
+
+    <div class="lbl">MongoDB — collection vs document + aggregation</div>
+    <ul class="pts">
+      <li><strong>Document</strong> = one record (JSON object). <strong>Collection</strong> = group of documents (like a table)</li>
+      <li>Schema-less — documents in same collection can have different fields</li>
+    </ul>
+<pre><span class="c">// Aggregation pipeline</span>
+db.orders.<span class="f">aggregate</span>([
+  { $match: { status: <span class="s">"completed"</span> } },    <span class="c">// filter</span>
+  { $group: { _id: <span class="s">"$userId"</span>,             <span class="c">// group by userId</span>
+              total: { $sum: <span class="s">"$amount"</span>}}},  <span class="c">// sum amounts</span>
+  { $sort: { total: -<span class="n">1</span> } }                 <span class="c">// sort desc</span>
+]);</pre>
+  </div>
+</div>
+
+</div><!-- /grid -->
+
+<!-- ─── BAND 4: OS + NETWORKING ─── -->
+<div class="grid" style="margin-top:12px">
+
+<div class="card">
+  <div class="ch"><h2>Operating Systems</h2><span class="badge ch-g">MED</span></div>
+  <div class="cb">
+    <div class="lbl">Process vs Thread</div>
+    <table>
+      <tr><th></th><th>Process</th><th>Thread</th></tr>
+      <tr><td>Memory</td><td>own address space</td><td>shared within process</td></tr>
+      <tr><td>Create cost</td><td>heavy</td><td>lightweight</td></tr>
+      <tr><td>Crash impact</td><td>isolated</td><td>crashes whole process</td></tr>
+      <tr><td>IPC</td><td>pipes/sockets — complex</td><td>shared variables — simple but needs sync</td></tr>
+    </table>
+
+    <div class="lbl">Deadlock — 4 conditions (ALL must hold)</div>
+    <ul class="pts">
+      <li><strong>Mutual Exclusion</strong> — resource held by only one process</li>
+      <li><strong>Hold &amp; Wait</strong> — holds resource while waiting for another</li>
+      <li><strong>No Preemption</strong> — resource can't be forcibly taken</li>
+      <li><strong>Circular Wait</strong> — P1→P2→P3→P1 dependency cycle</li>
+    </ul>
+    <div class="hbox exam">Break ANY ONE condition = prevent deadlock. Common fix: enforce global lock-acquisition order (break circular wait).</div>
+
+    <div class="lbl">Mutex vs Semaphore</div>
+    <table>
+      <tr><th></th><th>Mutex</th><th>Semaphore</th></tr>
+      <tr><td>Value</td><td>binary (0/1)</td><td>integer (count)</td></tr>
+      <tr><td>Ownership</td><td>owner thread must unlock</td><td>any thread can signal</td></tr>
+      <tr><td>Use</td><td>one shared resource</td><td>pool of N resources</td></tr>
+    </table>
+
+    <div class="lbl">Paging + Virtual Memory</div>
+    <ul class="pts">
+      <li><strong>Virtual memory</strong> — each process sees its own large address space; OS maps to physical RAM via page table</li>
+      <li><strong>Page fault</strong> — requested page not in RAM → OS loads from disk (slow)</li>
+      <li><strong>Thrashing</strong> — more time page-faulting than working (too many processes, too little RAM)</li>
+      <li><strong>LRU</strong> page replacement = evict least recently used page</li>
+    </ul>
+
+    <div class="lbl">CPU Scheduling</div>
+    <table>
+      <tr><th>Algorithm</th><th>Selects next</th><th>Issue</th></tr>
+      <tr><td>FCFS</td><td>arrival order</td><td>convoy effect</td></tr>
+      <tr><td>SJF</td><td>shortest burst</td><td>needs future knowledge</td></tr>
+      <tr><td>Round Robin</td><td>time slice (quantum)</td><td>quantum size matters</td></tr>
+      <tr><td>Priority</td><td>highest priority</td><td>starvation (fix: aging)</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch"><h2>Networking</h2><span class="badge ch-g">MED</span></div>
+  <div class="cb">
+    <div class="lbl">OSI Layers — quick recall</div>
+    <table>
+      <tr><th>Layer</th><th>Key protocols</th></tr>
+      <tr><td>7 Application</td><td>HTTP, HTTPS, FTP, DNS, SMTP</td></tr>
+      <tr><td>4 Transport</td><td>TCP, UDP — ports, segmentation</td></tr>
+      <tr><td>3 Network</td><td>IP — routing, addressing</td></tr>
+      <tr><td>2 Data Link</td><td>MAC, Ethernet, switches</td></tr>
+      <tr><td>1 Physical</td><td>cables, signals, NICs</td></tr>
+    </table>
+
+    <div class="lbl">TCP vs UDP</div>
+    <table>
+      <tr><th></th><th>TCP</th><th>UDP</th></tr>
+      <tr><td>Reliable?</td><td>yes — ACK + retransmit</td><td>no — fire and forget</td></tr>
+      <tr><td>Connection</td><td>3-way handshake (SYN/SYN-ACK/ACK)</td><td>connectionless</td></tr>
+      <tr><td>Use</td><td>HTTP, file transfer, email</td><td>video, DNS, gaming, VoIP</td></tr>
+    </table>
+
+    <div class="lbl">HTTP vs HTTPS</div>
+    <ul class="pts">
+      <li><strong>HTTP</strong> — plaintext, port 80, no encryption</li>
+      <li><strong>HTTPS</strong> — HTTP over TLS/SSL, port 443, encrypted</li>
+      <li>TLS: asymmetric (RSA) to exchange key → then symmetric (AES) for speed</li>
+    </ul>
+
+    <div class="lbl">DNS resolution</div>
+    <ul class="pts">
+      <li>Browser cache → OS cache → ISP resolver → Root nameserver → TLD (.com) → Authoritative → IP</li>
+      <li>Uses UDP port 53</li>
+    </ul>
+
+    <div class="lbl">Status codes — cold recall</div>
+    <table>
+      <tr><td><code>200</code> OK / <code>201</code> Created</td><td>success</td></tr>
+      <tr><td><code>400</code> Bad Request</td><td>client error</td></tr>
+      <tr><td><code>401</code> Unauthorized</td><td>no/invalid token</td></tr>
+      <tr><td><code>403</code> Forbidden</td><td>valid token, no permission</td></tr>
+      <tr><td><code>404</code> Not Found</td><td>resource missing</td></tr>
+      <tr><td><code>500</code> Server Error</td><td>backend crash</td></tr>
+    </table>
+    <div class="hbox warn"><strong>401 vs 403:</strong> 401 = "who are you?" (no/bad token). 403 = "I know you, but NO." (valid token, wrong role).</div>
+  </div>
+</div>
+
+</div><!-- /grid -->
+
+<!-- ─── BAND 5: Python + AI ─── -->
+<div class="grid" style="margin-top:12px">
+
+<div class="card">
+  <div class="ch"><h2>Python Fundamentals</h2><span class="badge ch-b">LOW-MED</span></div>
+  <div class="cb">
+    <div class="lbl">List vs Tuple vs Set vs Dict</div>
+    <table>
+      <tr><th></th><th>List</th><th>Tuple</th><th>Set</th><th>Dict</th></tr>
+      <tr><td>Mutable?</td><td>yes</td><td><strong>no</strong></td><td>yes</td><td>yes</td></tr>
+      <tr><td>Ordered?</td><td>yes</td><td>yes</td><td>no</td><td>yes (3.7+)</td></tr>
+      <tr><td>Duplicates?</td><td>yes</td><td>yes</td><td><strong>no</strong></td><td>keys: no</td></tr>
+      <tr><td>Syntax</td><td><code>[]</code></td><td><code>()</code></td><td><code>{}</code></td><td><code>{k:v}</code></td></tr>
+    </table>
+    <div class="hbox exam">Tuple is immutable — use for data that shouldn't change (coordinates, DB row). Faster than list. Hashable so can be dict key.</div>
+
+    <div class="lbl">*args vs **kwargs</div>
+<pre><span class="k">def</span> <span class="f">func</span>(*args, **kwargs):
+    <span class="c"># *args = tuple of positional args</span>
+    <span class="c"># **kwargs = dict of keyword args</span>
+    <span class="k">for</span> a <span class="k">in</span> args: print(a)
+    <span class="k">for</span> k,v <span class="k">in</span> kwargs.items(): print(k,v)
+
+<span class="f">func</span>(<span class="n">1</span>, <span class="n">2</span>, name=<span class="s">"Ali"</span>, age=<span class="n">25</span>)
+<span class="c"># args = (1,2)   kwargs = {'name':'Ali','age':25}</span></pre>
+
+    <div class="lbl">List comprehension + lambda</div>
+<pre><span class="c"># List comprehension</span>
+evens = [x <span class="k">for</span> x <span class="k">in range</span>(<span class="n">10</span>) <span class="k">if</span> x%<span class="n">2</span>==<span class="n">0</span>]
+
+<span class="c"># Lambda + filter/map</span>
+nums = [<span class="n">1</span>,<span class="n">2</span>,<span class="n">3</span>,<span class="n">4</span>,<span class="n">5</span>]
+odds   = list(<span class="f">filter</span>(<span class="k">lambda</span> x: x%<span class="n">2</span>!=<span class="n">0</span>, nums))
+doubled= list(<span class="f">map</span>(<span class="k">lambda</span> x: x*<span class="n">2</span>, nums))</pre>
+
+    <div class="lbl">Django vs FastAPI — quick diff</div>
+    <table>
+      <tr><th></th><th>Django (REST)</th><th>FastAPI</th></tr>
+      <tr><td>Style</td><td>batteries-included ORM</td><td>lightweight, async-first</td></tr>
+      <tr><td>Speed</td><td>slower (synchronous default)</td><td>faster (async/await native)</td></tr>
+      <tr><td>Best for</td><td>full apps with auth, admin, ORM</td><td>microservices, ML serving</td></tr>
+      <tr><td>Your use</td><td>RentEase backend</td><td>PDF generation microservice</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch"><h2>AI/ML — Simple Answers</h2><span class="badge ch-b">LOW</span></div>
+  <div class="cb">
+    <div class="lbl">Concepts they'll ask (1-2 lines each)</div>
+    <ul class="pts">
+      <li><strong>RAG (Retrieval Augmented Generation)</strong> — instead of relying only on LLM knowledge, retrieve relevant documents first, then feed as context. More accurate for domain-specific data.</li>
+      <li><strong>Embedding</strong> — convert text into a numerical vector that captures semantic meaning. Similar texts have vectors close together in vector space.</li>
+      <li><strong>FAISS</strong> — Facebook AI Similarity Search. Library for efficient nearest-neighbor search over millions of vectors. Used for finding similar documents quickly.</li>
+      <li><strong>NLP</strong> — Natural Language Processing. Making computers understand human language. Tasks: classification, summarization, translation, Q&amp;A.</li>
+      <li><strong>Whisper</strong> — OpenAI's speech-to-text model. Takes audio → transcribes to text. Multilingual, handles noisy audio well.</li>
+      <li><strong>Fine-tuning</strong> — take a pre-trained model (e.g. GPT), train further on your specific dataset to adapt it to your task. Less data needed than training from scratch.</li>
+      <li><strong>QLoRA</strong> — Quantized LoRA. Fine-tune large models with 4-bit quantization — uses much less GPU memory. Only trains small adapter layers (~1% of params).</li>
+    </ul>
+
+    <div class="lbl">Your projects — say exactly this</div>
+    <div class="ans">
+      <div class="q">RAG Clinical Notes</div>
+      <p>Built on MIMIC-IV clinical dataset. Used Sentence Transformers to generate embeddings, stored in FAISS vector index. User query → embed → cosine similarity search → top-K records → LLM generates answer grounded in those records. Reduces diagnostic lookup to under 6 seconds.</p>
+    </div>
+    <div class="ans">
+      <div class="q">QLoRA Fine-tuning</div>
+      <p>Fine-tuned Qwen2-VL-2B (vision-language model) for document-to-Markdown generation. Used 4-bit NF4 quantization with LoRA rank=16. Only ~1% of parameters were trainable. ROUGE-L improved from 0.18 (zero-shot) to 0.63 — 3.5x improvement. Trained on dual T4 GPUs on Kaggle.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /grid -->
+
+<!-- ─── FINAL CHECKLIST ─── -->
+<div class="card full" style="margin-top:12px">
+  <div class="ch"><h2>Walk-In Checklist — Read 10 mins before test</h2><span class="badge ch-g">FINAL</span></div>
+  <div class="cb">
+    <div class="grid3">
+      <div>
+        <div class="lbl">Say these confidently</div>
+        <ul class="pts">
+          <li>Overloading = static binding (compile-time). Overriding = dynamic binding (runtime)</li>
+          <li>Abstract class has ≥1 pure virtual (<code>=0</code>). Cannot instantiate.</li>
+          <li>Constructor = called on create. Destructor = called on destroy, frees memory.</li>
+          <li>Deadlock = 4 conditions, break any one to prevent</li>
+          <li>Thread shares memory with process. Mutex = binary lock. Semaphore = counter.</li>
+          <li>401 = no identity. 403 = no permission.</li>
+          <li>HAVING filters after GROUP BY. WHERE filters before.</li>
+          <li>2nd highest = <code>SELECT MAX WHERE salary &lt; (SELECT MAX)</code></li>
+        </ul>
+      </div>
+      <div>
+        <div class="lbl">Coding — write fast</div>
+        <ul class="pts">
+          <li><strong>Reverse array</strong> — two pointers, swap, move inward. O(n) O(1)</li>
+          <li><strong>Second largest</strong> — one pass, track first and second. O(n) O(1)</li>
+          <li><strong>Palindrome</strong> — two pointers both ends, compare. O(n) O(1)</li>
+          <li><strong>Two sum</strong> — HashMap, check complement. O(n) O(n)</li>
+          <li><strong>Binary search</strong> — l/r/mid, halve each step. O(log n)</li>
+          <li><strong>Remove duplicates (sorted)</strong> — j pointer, keep unique. O(n) O(1)</li>
+          <li><strong>Frequency count</strong> — unordered_map, iterate. O(n)</li>
+          <li>Always write: <code>#include &lt;iostream&gt;</code>, <code>using namespace std;</code>, <code>int main()</code></li>
+        </ul>
+      </div>
+      <div>
+        <div class="lbl">Projects — one sentence each</div>
+        <ul class="pts">
+          <li><strong>RentEase</strong> — full-stack SaaS rental system. Next.js + Django REST + PostgreSQL + JWT + RBAC + FastAPI PDF microservice</li>
+          <li><strong>HealthMate</strong> — mobile health monitoring. React Native + Flask + MySQL + XGBoost risk prediction under 5s</li>
+          <li><strong>AI Knowledge OS</strong> — MERN knowledge platform with RAG semantic search and JWT auth</li>
+          <li><strong>RAG Clinical Notes</strong> — MIMIC-IV + FAISS + Sentence Transformers, Q&A under 6s</li>
+          <li><strong>QLoRA</strong> — fine-tuned Qwen2-VL, ROUGE-L 0.18→0.63, 3.5x improvement</li>
+        </ul>
+        <div class="hbox tip" style="margin-top:8px"><strong>Paper test strategy:</strong> Skip nothing. Attempt every question even if partial. Time complexity always O(n²) brute → O(n) optimized. Write the approach first if unsure of syntax.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
